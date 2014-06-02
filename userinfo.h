@@ -11,5 +11,7 @@ typedef struct user{
 void insertUser();
 void printUser();
 void saveUser();
+void editUser();
+void searchUser();
 
 #endif
