@@ -21,6 +21,7 @@ int main(void)
 	char *str;
 	FILE *fp = fopen("data.txt", "r");
 	if (fp == NULL) return -1;
+
 	fgets(list, sizeof(list), fp);
 	while (feof(fp) == 0)
 	{
@@ -60,7 +61,7 @@ int main(void)
 	while (1)
 	{
 		system("cls");
-		printf("\n\n1번: 회원 목록보기\n\n2번: 회원 등록하기\n\n3번: 회원 저장하기\n\n4번: 회원 수정하기\n\n6번: 회원 검색하기\n\nESC: 종료하기");
+		printf("\n\n1번: 회원 목록보기\n\n2번: 회원 등록하기\n\n3번: 회원 저장하기\n\n4번: 회원 편집하기\n\n6번: 회원 검색하기\n\nESC: 종료하기");
 		printf("\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\tThanks to.덕성킴,남세");
 		while (1)
 		{
@@ -172,7 +173,7 @@ void insertUser()
 		if (result == 0)
 			break;
 		system("cls");
-		printf("\n\nERROR: Please input only Letters in Name");
+		printf("\n\nERROR: 이름에 숫자나 공백은 들어갈 수 없습니다.");
 	}
 	system("cls");
 	while (1)
@@ -185,7 +186,7 @@ void insertUser()
 		if (strlen(user[count].address) != 0 && (user[count].address)[0] != ' ')
 			break;
 		system("cls");
-		printf("\n\nERROR: Address is empty");
+		printf("\n\nERROR: 주소를 작성해 주십시오.");
 	}
 	system("cls");
 	while (1)
@@ -203,7 +204,7 @@ void insertUser()
 				&& (user[count].phone)[5]>47 && (user[count].phone)[5]<58
 				&& (user[count].phone)[6]>47 && (user[count].phone)[6]<58
 				&& (user[count].phone)[7]>47 && (user[count].phone)[7]<58
-				&& (user[count].phone)[9]>47 && (user[count].phone)[9]<586
+				&& (user[count].phone)[9]>47 && (user[count].phone)[9]<58
 				&& (user[count].phone)[10]>47 && (user[count].phone)[10]<58
 				&& (user[count].phone)[11]>47 && (user[count].phone)[11]<58
 				&& (user[count].phone)[12]>47 && (user[count].phone)[12] < 58
@@ -212,7 +213,7 @@ void insertUser()
 			else
 			{
 				system("cls");
-				printf("\nError: Phone Number is \"01x-xxxx-xxxx\"\n\n");
+				printf("\n전화번호의 형식은 \"01x-xxxx-xxxx\" 입니다.\n\n");
 			}
 		}
 		for (i = 0; i < count; i++)
@@ -224,7 +225,7 @@ void insertUser()
 		if (result != 0)
 			break;
 		system("cls");
-		printf("\nERROR: This Phone Number already exists!!\n\n");
+		printf("\nERROR: 이미 존재하는 전화번호 입니다.\n\n");
 	}
 	system("cls");
 	printf("\n\nID: %d\tName: %s\tPhone Number: %s\n\nAddress: %s\t\n\n다음과 같은 정보로 회원이 등록되었습니다.\n\n",
@@ -266,14 +267,10 @@ void saveUser()
 
 void editUser()
 {
-
-}
-
-void searchUser()
-{
 	int select;
 	int i, num;
-	char choice[20];
+	int idx, result = 0;
+	char choice[40];
 
 	while (1)
 	{
@@ -331,8 +328,158 @@ void searchUser()
 				printf("\n\n\n\t\t해당 전화번호의 회원은 존재하지 않습니다.");
 			break;
 		}
+		if (i != count)
+			break;
+	}
+	system("cls");
+	while (1)
+	{
+		printf("\n\n찾으신 회원:\n\nID: %d\tName: %s\tPhone Number: %s\n\nAddress: %s\n\n",
+			user[i].ID, user[i].name, user[i].phone, user[i].address);
+		printf("\n1번: 이름 편집하기\n\n2번: 주소 편집하기\n\n3번: 전화번호 편집하기\n\nESC: 편집 끝내기");
+		select = getch();
+		system("cls");
+		if (select == '1')
+		{
+			while (1)
+			{
+				result = 0;
+				printf("\n\n\n편집할 이름 입력: ");
+				gets(user[i].name);
+				for (idx = 0; idx < (int)strlen(user[i].name); idx++)
+				{
+					if ((user[i].name)[idx] >= '0' && (user[i].name)[idx] <= '9' || (user[i].name)[idx] == ' ')
+					{
+						result++;
+					}
+				}
+				if (strlen(user[i].name) == 0)
+					result++;
+				printf("\n");
+				system("cls");
+				if (result == 0)
+					break;
+				printf("\n\n이름에 숫자나 공백은 들어갈 수 없습니다.");
+			}
+		}
+		else if (select == '2')
+		{
+			while (1)
+			{
+				printf("\n\n\n편집할 주소 입력: ");
+				gets(user[i].address);
+				if (strlen(user[i].address) != 0 && (user[i].address)[0] != ' ')
+					break;
+				system("cls");
+				printf("\n\nERROR: 주소를 작성해 주십시오.");
+			}
+		}
+		else if (select == '3')
+		{
+			while (1)
+			{
+				while (1)
+				{
+					printf("\n\n\n편집할 전화번호 입력: ");
+					gets(user[i].phone);
+					if ((user[i].phone)[3] == '-' && (user[i].phone)[8] == '-' &&strlen(user[i].phone) == 13
+						&& (user[i].phone)[0] == 48 && (user[i].phone)[1] == 49
+						&& (user[i].phone)[4] > 47 && (user[i].phone)[4]<58
+						&& (user[i].phone)[5]>47 && (user[i].phone)[5]<58
+						&& (user[i].phone)[6]>47 && (user[i].phone)[6]<58
+						&& (user[i].phone)[7]>47 && (user[i].phone)[7]<58
+						&& (user[i].phone)[9]>47 && (user[i].phone)[9]<58
+						&& (user[i].phone)[10]>47 && (user[i].phone)[10]<58
+						&& (user[i].phone)[11]>47 && (user[i].phone)[11]<58
+						&& (user[i].phone)[12]>47 && (user[i].phone)[12] < 58
+						)
+						break;
+					else
+					{
+						system("cls");
+						printf("\n전화번호의 형식은 \"01x-xxxx-xxxx\" 입니다.\n\n");
+					}
+				}
+				for (idx = 0; idx < count; idx++)
+				{
+					result = strcmp(user[idx].phone, user[i].phone);
+					if (result == 0 && idx != i)
+						break;
+				}
+				if (result != 0)
+					break;
+				system("cls");
+				printf("\nERROR: 이미 존재하는 전화번호 입니다.\n\n");
+			}
+		}
 		if (select == 27)
 			break;
 	}
 }
 
+void searchUser()
+{
+	int select;
+	int i, num;
+	char choice[40];
+
+	while (1)
+	{
+		printf("\n\n1번: ID로 검색하기\n\n2번: 이름으로 검색하기\n\n3번: 전화번호로 검색하기\n\nESC: 메뉴로 돌아가기");
+		select = getch();
+		system("cls");
+		switch (select)
+		{
+		case '1':
+			system("cls");
+			printf("\n\nID입력: ");
+			scanf("%d", &num);
+			for (i = 0; i < count; i++)
+			{
+				if (user[i].ID == num)
+					break;
+			}
+			system("cls");
+			if (i != count)
+				printf("\n\n찾으신 회원:\n\nID: %d\tName: %s\tPhone Number: %s\n\nAddress: %s\n\n",
+				user[i].ID, user[i].name, user[i].phone, user[i].address);
+			else
+				printf("\n\n\n\t\tERROR: 해당 ID의 회원은 존재하지 않습니다.");
+			break;
+		case '2':
+			system("cls");
+			printf("\n\n이름입력: ");
+			gets(choice);
+			for (i = 0; i < count; i++)
+			{
+				if (!strcmp(user[i].name, choice))
+					break;
+			}
+			system("cls");
+			if (i != count)
+				printf("\n\n찾으신 회원:\n\nID: %d\tName: %s\tPhone Number: %s\n\nAddress: %s\n\n",
+				user[i].ID, user[i].name, user[i].phone, user[i].address);
+			else
+				printf("\n\n\n\t\tERROR: 해당 이름의 회원은 존재하지 않습니다.");
+			break;
+		case '3':
+			system("cls");
+			printf("\n\n전화번호입력: ");
+			gets(choice);
+			for (i = 0; i < count; i++)
+			{
+				if (!strcmp(user[i].phone, choice))
+					break;
+			}
+			system("cls");
+			if (i != count)
+				printf("\n\n찾으신 회원:\n\nID: %d\tName: %s\tPhone Number: %s\n\nAddress: %s\n\n",
+				user[i].ID, user[i].name, user[i].phone, user[i].address);
+			else
+				printf("\n\n\n\t\tERROR: 해당 전화번호의 회원은 존재하지 않습니다.");
+			break;
+		}
+		if (select == 27)
+			break;
+	}
+}
