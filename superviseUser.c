@@ -20,7 +20,7 @@ int main(void)
 	char list[255];
 	char *str;
 	FILE *fp = fopen("data.txt", "r");
-
+	if (fp == NULL) return -1;
 	fgets(list, sizeof(list), fp);
 	while (feof(fp) == 0)
 	{
