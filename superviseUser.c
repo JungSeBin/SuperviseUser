@@ -7,9 +7,17 @@
 #pragma warning(disable:4996)
 
 #define MAX 11
+#define BUF 255
 user_t user[100];
+char buffer[BUF];
 int count = 0;
 int ID;
+
+void gotoxy(int x, int y)
+{
+	COORD Pos = { x - 1, y - 1 };
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
+}
 
 int main(void)
 {
@@ -20,7 +28,11 @@ int main(void)
 	char list[255];
 	char *str;
 	FILE *fp = fopen("data.txt", "r");
-	if (fp == NULL) return -1;
+	if (fp == NULL)
+	{
+		printf("\n\n\n\t\t\tERROR: 파일이 존재하지 않습니다.\n\n\n");
+		return -1;
+	}
 
 	fgets(list, sizeof(list), fp);
 	while (feof(fp) == 0)
@@ -149,31 +161,43 @@ void printUser()
 
 void insertUser()
 {
-	int i, result;
+	int i, result = 0;
 	int select;
 	user[count].ID = ++ID;
-	printf("\n\nID: %d\n\n", user[count].ID);
-	system("cls");
+
 	while (1)
 	{
 		printf("\n\nID: %d\n\n", user[count].ID);
-		result = 0;
 		printf("Name: ");
-		gets(user[count].name);
-		for (i = 0; i < (int)strlen(user[count].name); i++)
+		if (result == 1)
+			printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\tERROR: 이름에 숫자나 공백은 들어갈 수 없습니다.");
+		else if (result == 2)
+			printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\tERROR: 이름은 한글10자 영문20자까지 가능합니다.");
+		gotoxy(7, 5);
+		result = 0;
+		fgets(buffer,BUF,stdin);
+		buffer[(int)strlen(buffer) - 1] = '\0';
+
+		if (strlen(buffer) == 0)
+			result = 1;
+		else if (strlen(buffer) > 20)
+			result = 2;
+
+		for (i = 0; i < (int)strlen(buffer); i++)
 		{
-			if ((user[count].name)[i] >= '0' && (user[count].name)[i] <= '9' || (user[count].name)[i] == ' ')
+			if (buffer[i] >= '0' && buffer[i] <= '9' || buffer[i] == ' ')
 			{
-				result++;
+				result = 1;
+				break;
 			}
 		}
-		if (strlen(user[count].name) == 0)
-			result++;
-		printf("\n");
+
 		if (result == 0)
+		{
+			strcpy(user[count].name, buffer);
 			break;
+		}
 		system("cls");
-		printf("\n\nERROR: 이름에 숫자나 공백은 들어갈 수 없습니다.");
 	}
 	system("cls");
 	while (1)
@@ -181,14 +205,27 @@ void insertUser()
 		printf("\n\nID: %d", user[count].ID);
 		printf("\n\nName: %s\n\n", user[count].name);
 		printf("Address: ");
-		gets(user[count].address);
-		printf("\n");
-		if (strlen(user[count].address) != 0 && (user[count].address)[0] != ' ')
+		if (result == -1)
+			printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\tERROR: 주소를 입력해 주십시오.");
+		else if (result == -2)
+			printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\tERROR: 주소가 너무 깁니다.");
+		gotoxy(10, 7);
+		fgets(buffer, BUF, stdin);
+		buffer[(int)strlen(buffer) - 1] = '\0';
+		
+		if (strlen(buffer) > 50)
+			result = -2;
+		else if (strlen(buffer) == 0 || buffer[0] == ' ')
+			result = -1;
+		else
+		{
+			strcpy(user[count].address, buffer);
 			break;
+		}
 		system("cls");
-		printf("\n\nERROR: 주소를 작성해 주십시오.");
 	}
 	system("cls");
+	result = -1;
 	while (1)
 	{
 		while (1)
@@ -197,35 +234,42 @@ void insertUser()
 			printf("\n\nName: %s\n\n", user[count].name);
 			printf("Address: %s\n\n", user[count].address);
 			printf("Phone Number: ");
-			gets(user[count].phone);
-			if ((user[count].phone)[3] == '-' && (user[count].phone)[8] == '-' &&strlen(user[count].phone) == 13
-				&& (user[count].phone)[0] == 48 && (user[count].phone)[1] == 49
-				&& (user[count].phone)[4] > 47 && (user[count].phone)[4]<58
-				&& (user[count].phone)[5]>47 && (user[count].phone)[5]<58
-				&& (user[count].phone)[6]>47 && (user[count].phone)[6]<58
-				&& (user[count].phone)[7]>47 && (user[count].phone)[7]<58
-				&& (user[count].phone)[9]>47 && (user[count].phone)[9]<58
-				&& (user[count].phone)[10]>47 && (user[count].phone)[10]<58
-				&& (user[count].phone)[11]>47 && (user[count].phone)[11]<58
-				&& (user[count].phone)[12]>47 && (user[count].phone)[12] < 58
+			if (result == 1)
+				printf("\n\n\n\n\n\n\n\n\n\n\n\t\t전화번호의 형식은 \"01x-xxxx-xxxx\" 입니다.");
+			else if (result == 0)
+				printf("\n\n\n\n\n\n\n\n\n\n\n\t\t    ERROR: 이미 존재하는 전화번호 입니다.\n\n");
+			gotoxy(15, 9);
+			fgets(buffer, BUF, stdin);
+			buffer[(int)strlen(buffer) - 1] = '\0';
+			if (buffer[3] == '-' && buffer[8] == '-' &&strlen(buffer) == 13
+				&& buffer[0] == 48 && buffer[1] == 49
+				&& buffer[4] > 47 && buffer[4]<58
+				&& buffer[5]>47 && buffer[5]<58
+				&& buffer[6]>47 && buffer[6]<58
+				&& buffer[7]>47 && buffer[7]<58
+				&& buffer[9]>47 && buffer[9]<58
+				&& buffer[10]>47 && buffer[10]<58
+				&& buffer[11]>47 && buffer[11]<58
+				&& buffer[12]>47 && buffer[12] < 58
 				)
 				break;
 			else
-			{
+				result = 1;
 				system("cls");
-				printf("\n전화번호의 형식은 \"01x-xxxx-xxxx\" 입니다.\n\n");
-			}
 		}
 		for (i = 0; i < count; i++)
 		{
-			result = strcmp(user[i].phone, user[count].phone);
+			result = strcmp(user[i].phone, buffer);
 			if (result == 0)
 				break;
 		}
 		if (result != 0)
+		{
+			strcpy(user[count].phone, buffer);
+			(user[count].phone)[strlen(buffer)] = '\0';
 			break;
+		}
 		system("cls");
-		printf("\nERROR: 이미 존재하는 전화번호 입니다.\n\n");
 	}
 	system("cls");
 	printf("\n\nID: %d\tName: %s\tPhone Number: %s\n\nAddress: %s\t\n\n다음과 같은 정보로 회원이 등록되었습니다.\n\n",
@@ -336,23 +380,33 @@ void editUser()
 		{
 			while (1)
 			{
-				result = 0;
 				printf("\n\n\n편집할 이름 입력: ");
-				gets(user[i].name);
-				for (idx = 0; idx < (int)strlen(user[i].name); idx++)
+				if (result == 1)
+					printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\tERROR: 이름에 숫자나 공백은 들어갈 수 없습니다.");
+				else if (result == 2)
+					printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\tERROR: 이름은 한글10자 영문20자까지 가능합니다.");
+				gotoxy(19, 4);
+				result = 0;
+				fgets(buffer, BUF, stdin);
+				buffer[(int)strlen(buffer) - 1] = '\0';
+				
+				if (strlen(buffer) == 0)
+					result = 1;
+				else if (strlen(buffer)>20)
+					result = 2;
+
+				for (idx = 0; idx < (int)strlen(buffer); idx++)
 				{
-					if ((user[i].name)[idx] >= '0' && (user[i].name)[idx] <= '9' || (user[i].name)[idx] == ' ')
-					{
-						result++;
-					}
+					if (buffer[idx] >= '0' && buffer[idx] <= '9' || buffer[idx] == ' ')
+						result = 1;
 				}
-				if (strlen(user[i].name) == 0)
-					result++;
-				printf("\n");
+
 				system("cls");
 				if (result == 0)
+				{
+					strcpy(user[i].name, buffer);
 					break;
-				printf("\n\n이름에 숫자나 공백은 들어갈 수 없습니다.");
+				}
 			}
 		}
 		else if (select == '2')
@@ -360,49 +414,68 @@ void editUser()
 			while (1)
 			{
 				printf("\n\n\n편집할 주소 입력: ");
-				gets(user[i].address);
-				if (strlen(user[i].address) != 0 && (user[i].address)[0] != ' ')
+				if (result == -1)
+					printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\tERROR: 주소를 작성해 주십시오.");
+				else if (result == -2)
+					printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\tERROR: 주소가 너무 깁니다.");
+				gotoxy(19, 4);
+				fgets(buffer, BUF, stdin);
+				buffer[(int)strlen(buffer) - 1] = '\0';
+				if (strlen(buffer) > 50)
+					result = -2;
+				else if (strlen(buffer) == 0 || buffer[0] == ' ')
+					result = -1;
+				else
+				{
+					strcpy(user[i].address, buffer);
 					break;
+				}
 				system("cls");
-				printf("\n\nERROR: 주소를 작성해 주십시오.");
 			}
 		}
 		else if (select == '3')
 		{
+			result = -1;
 			while (1)
 			{
 				while (1)
 				{
+					system("cls");
 					printf("\n\n\n편집할 전화번호 입력: ");
-					gets(user[i].phone);
-					if ((user[i].phone)[3] == '-' && (user[i].phone)[8] == '-' &&strlen(user[i].phone) == 13
-						&& (user[i].phone)[0] == 48 && (user[i].phone)[1] == 49
-						&& (user[i].phone)[4] > 47 && (user[i].phone)[4]<58
-						&& (user[i].phone)[5]>47 && (user[i].phone)[5]<58
-						&& (user[i].phone)[6]>47 && (user[i].phone)[6]<58
-						&& (user[i].phone)[7]>47 && (user[i].phone)[7]<58
-						&& (user[i].phone)[9]>47 && (user[i].phone)[9]<58
-						&& (user[i].phone)[10]>47 && (user[i].phone)[10]<58
-						&& (user[i].phone)[11]>47 && (user[i].phone)[11]<58
-						&& (user[i].phone)[12]>47 && (user[i].phone)[12] < 58
+					if (result == 1)
+						printf("\n\n\n\n\n\n\n\n\n\n\n\t\t전화번호의 형식은 \"01x-xxxx-xxxx\" 입니다.");
+					else if (result == 0)
+						printf("\n\n\n\n\n\n\n\n\n\n\n\t\t    ERROR: 이미 존재하는 전화번호 입니다.\n\n");
+					gotoxy(22, 4);
+					fgets(buffer, BUF, stdin);
+					buffer[(int)strlen(buffer) - 1] = '\0';
+					if (buffer[3] == '-' && buffer[8] == '-' &&strlen(buffer) == 13
+						&& buffer[0] == 48 && buffer[1] == 49
+						&& buffer[4] > 47 && buffer[4]<58
+						&& buffer[5]>47 && buffer[5]<58
+						&& buffer[6]>47 && buffer[6]<58
+						&& buffer[7]>47 && buffer[7]<58
+						&& buffer[9]>47 && buffer[9]<58
+						&& buffer[10]>47 && buffer[10]<58
+						&& buffer[11]>47 && buffer[11]<58
+						&& buffer[12]>47 && buffer[12] < 58
 						)
 						break;
 					else
-					{
-						system("cls");
-						printf("\n전화번호의 형식은 \"01x-xxxx-xxxx\" 입니다.\n\n");
-					}
+						result = 1;
 				}
 				for (idx = 0; idx < count; idx++)
 				{
-					result = strcmp(user[idx].phone, user[i].phone);
-					if (result == 0 && idx != i)
+					result = strcmp(user[idx].phone, buffer);
+					if (result == 0)
 						break;
 				}
 				system("cls");
 				if (result != 0)
+				{
+					strcpy(user[i].phone, buffer);
 					break;
-				printf("\nERROR: 이미 존재하는 전화번호 입니다.\n\n");
+				}
 			}
 		}
 		if (select == 27)
