@@ -320,23 +320,29 @@ void editUser()
 	while (1)
 	{
 		printf("\n\n1번: ID로 검색하기\n\n2번: 이름으로 검색하기\n\n3번: 전화번호로 검색하기\n\nESC: 메뉴로 돌아가기");
+		if (result == 1)
+			printf("\n\n\n\n\n\n\n\n\n\n\n\t\tERROR: 해당 ID의 회원은 존재하지 않습니다.");
+		else if (result == 2)
+			printf("\n\n\n\n\n\n\n\n\n\n\n\t\tERROR: 해당 이름의 회원은 존재하지 않습니다.");
+		else if (result == 3)
+			printf("\n\n\n\n\n\n\n\n\n\n\n\t\tERROR: 해당 전화번호의 회원은 존재하지 않습니다.");
+
 		select = getch();
 		system("cls");
 		switch (select)
 		{
 		case '1':
-			system("cls");
 			printf("\n\nID입력: ");
 			gets(ID);
 			num = atoi(ID);
 			for (i = 0; i < count; i++)
 			{
-				if (user[i].ID == num)
+				if (user[i].ID == num) 
 					break;
 			}
-			system("cls");
 			if (i == count)
-				printf("\n\n\n\t\t해당 ID의 회원은 존재하지 않습니다.");
+				result = 1;
+			system("cls");
 			break;
 		case '2':
 			system("cls");
@@ -349,7 +355,7 @@ void editUser()
 			}
 			system("cls");
 			if (i == count)
-				printf("\n\n\n\t\t해당 이름의 회원은 존재하지 않습니다.");
+				result = 2;
 			break;
 		case '3':
 			system("cls");
@@ -362,13 +368,17 @@ void editUser()
 			}
 			system("cls");
 			if (i == count)
-				printf("\n\n\n\t\t해당 전화번호의 회원은 존재하지 않습니다.");
+				result = 3;
 			break;
 		}
 		if (i != count)
 			break;
+		if (select == 27)
+			return;
+		
 	}
 	system("cls");
+	result = 0;
 	while (1)
 	{
 		printf("\n\n편집할 회원:\n\nID: %d\tName: %s\tPhone Number: %s\n\nAddress: %s\n\n",
@@ -486,12 +496,23 @@ void editUser()
 void searchUser()
 {
 	int select;
-	int i, num;
+	int i = count, num;
 	char choice[40];
+	int result = 0;
 
 	while (1)
 	{
+		if (i != count)
+			printf("\n\n찾으신 회원:\n\nID: %d\tName: %s\tPhone Number: %s\n\nAddress: %s\n\n",
+			user[i].ID, user[i].name, user[i].phone, user[i].address);
+
 		printf("\n\n1번: ID로 검색하기\n\n2번: 이름으로 검색하기\n\n3번: 전화번호로 검색하기\n\nESC: 메뉴로 돌아가기");
+		if (result == 1)
+			printf("\n\n\n\n\n\n\n\n\n\n\n\t\tERROR: 해당 ID의 회원은 존재하지 않습니다.");
+		else if (result == 2)
+			printf("\n\n\n\n\n\n\n\n\n\n\n\t\tERROR: 해당 이름의 회원은 존재하지 않습니다.");
+		else if (result == 3)
+			printf("\n\n\n\n\n\n\n\n\n\n\n\t\tERROR: 해당 전화번호의 회원은 존재하지 않습니다.");
 		select = getch();
 		system("cls");
 		switch (select)
@@ -503,14 +524,15 @@ void searchUser()
 			for (i = 0; i < count; i++)
 			{
 				if (user[i].ID == num)
+				{
+					result = 0;
 					break;
+				}
 			}
+			if (i == count)
+				result = 1;
 			system("cls");
-			if (i != count)
-				printf("\n\n찾으신 회원:\n\nID: %d\tName: %s\tPhone Number: %s\n\nAddress: %s\n\n",
-				user[i].ID, user[i].name, user[i].phone, user[i].address);
-			else
-				printf("\n\n\n\t\tERROR: 해당 ID의 회원은 존재하지 않습니다.");
+				
 			break;
 		case '2':
 			system("cls");
@@ -519,14 +541,15 @@ void searchUser()
 			for (i = 0; i < count; i++)
 			{
 				if (!strcmp(user[i].name, choice))
+				{
+					result = 0;
 					break;
+				}
 			}
+			if (i == count)
+				result = 1;
 			system("cls");
-			if (i != count)
-				printf("\n\n찾으신 회원:\n\nID: %d\tName: %s\tPhone Number: %s\n\nAddress: %s\n\n",
-				user[i].ID, user[i].name, user[i].phone, user[i].address);
-			else
-				printf("\n\n\n\t\tERROR: 해당 이름의 회원은 존재하지 않습니다.");
+				
 			break;
 		case '3':
 			system("cls");
@@ -535,14 +558,14 @@ void searchUser()
 			for (i = 0; i < count; i++)
 			{
 				if (!strcmp(user[i].phone, choice))
+				{
+					result = 0;
 					break;
+				}
 			}
+			if (i == count)
+				result = 1;
 			system("cls");
-			if (i != count)
-				printf("\n\n찾으신 회원:\n\nID: %d\tName: %s\tPhone Number: %s\n\nAddress: %s\n\n",
-				user[i].ID, user[i].name, user[i].phone, user[i].address);
-			else
-				printf("\n\n\n\t\tERROR: 해당 전화번호의 회원은 존재하지 않습니다.");
 			break;
 		}
 		if (select == 27)
