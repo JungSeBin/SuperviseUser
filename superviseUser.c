@@ -75,6 +75,7 @@ int main(void)
 		system("cls");
 		printf("\n\n1번: 회원 목록보기\n\n2번: 회원 등록하기\n\n3번: 회원 저장하기\n\n4번: 회원 편집하기\n\n6번: 회원 검색하기\n\nESC: 종료하기");
 		printf("\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\tThanks to.덕성킴,남세");
+
 		while (1)
 		{
 			select = getch();
@@ -117,6 +118,7 @@ int main(void)
 		}
 	}
 	printf("\n\n회원 관리 프로그램이 종료되었습니다.\n\n");
+
 }
 
 void printUser()
