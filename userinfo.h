@@ -3,16 +3,16 @@
 
 typedef struct user{
 	int ID;
-	char name[20];
-	char address[40];
-	char phone[20];
+	char name[21];
+	char address[51];
+	char phone[14];
 }user_t;
 
 void insertUser();
 void printUser();
 void saveUser();
 void editUser();
+void deleteUser();
 void searchUser();
 
 #endif
-

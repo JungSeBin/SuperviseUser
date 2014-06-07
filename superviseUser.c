@@ -73,9 +73,8 @@ int main(void)
 	while (1)
 	{
 		system("cls");
-		printf("\n\n1번: 회원 목록보기\n\n2번: 회원 등록하기\n\n3번: 회원 저장하기\n\n4번: 회원 편집하기\n\n6번: 회원 검색하기\n\nESC: 종료하기");
+		printf("\n\n1번: 회원 목록보기\n\n2번: 회원 등록하기\n\n3번: 회원 저장하기\n\n4번: 회원 편집하기\n\n5번: 회원 삭제하기\n\n6번: 회원 검색하기\n\nESC: 종료하기");
 		printf("\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\tThanks to.덕성킴,남세");
-
 		while (1)
 		{
 			select = getch();
@@ -97,13 +96,17 @@ int main(void)
 				system("cls");
 				editUser();
 				break;
+			case '5':
+				system("cls");
+				deleteUser();
+				break;
 			case '6':
 				system("cls");
 				searchUser();
 				break;
 			}
 			if (select == '1' || select == '2' || select == '3' || select == '4'
-				||select == '6')
+				|| select=='5'|| select == '6')
 				break;
 			else if (select == 27)
 			{
@@ -118,7 +121,6 @@ int main(void)
 		}
 	}
 	printf("\n\n회원 관리 프로그램이 종료되었습니다.\n\n");
-
 }
 
 void printUser()
@@ -136,8 +138,10 @@ void printUser()
 		printf("Phone Number\n");
 		for (; idx < (page + 1) * MAX; idx++)
 		{
-			if (user[idx].ID == 0)
-				printf(" \t%s\t%-21s\t%s\n\n",user[idx].name, user[idx].address, user[idx].phone);
+			if (user[idx].ID == 0 && idx >= count)
+				printf(" \t%s\t%-21s\t%s\n\n", user[idx].name, user[idx].address, user[idx].phone);
+			else if (user[idx].ID == 0)
+				printf("delete\tdelete\tdelete\t\t\tdelete\n");
 			else
 				printf("%d\t%s\t%-21s\t%s\n\n", user[idx].ID, user[idx].name, user[idx].address, user[idx].phone);
 		}
@@ -179,6 +183,7 @@ void insertUser()
 		result = 0;
 		fgets(buffer,BUF,stdin);
 		buffer[(int)strlen(buffer) - 1] = '\0';
+		fflush(stdin);
 
 		if (strlen(buffer) == 0)
 			result = 1;
@@ -214,6 +219,7 @@ void insertUser()
 		gotoxy(10, 7);
 		fgets(buffer, BUF, stdin);
 		buffer[(int)strlen(buffer) - 1] = '\0';
+		fflush(stdin);
 		
 		if (strlen(buffer) > 50)
 			result = -2;
@@ -243,6 +249,7 @@ void insertUser()
 			gotoxy(15, 9);
 			fgets(buffer, BUF, stdin);
 			buffer[(int)strlen(buffer) - 1] = '\0';
+			fflush(stdin);
 			if (buffer[3] == '-' && buffer[8] == '-' &&strlen(buffer) == 13
 				&& buffer[0] == 48 && buffer[1] == 49
 				&& buffer[4] > 47 && buffer[4]<58
@@ -315,7 +322,9 @@ void editUser()
 {
 	int select;
 	int i = count, num;
-	int idx, result = 0;
+	int idx = 0, result = 0;
+	int n;
+	char piece[40] = { NULL };
 	char ID[15];
 	char choice[40];
 
@@ -335,8 +344,10 @@ void editUser()
 		{
 		case '1':
 			printf("\n\nID입력: ");
-			gets(ID);
+			fgets(ID,15,stdin);
+			ID[(int)strlen(ID) - 1] = '\0';
 			num = atoi(ID);
+			fflush(stdin);
 			for (i = 0; i < count; i++)
 			{
 				if (user[i].ID == num) 
@@ -349,20 +360,55 @@ void editUser()
 		case '2':
 			system("cls");
 			printf("\n\n이름입력: ");
-			gets(choice);
+			fgets(choice,40,stdin);
+			choice[(int)strlen(choice) - 1] = '\0';
+			fflush(stdin);
 			for (i = 0; i < count; i++)
 			{
 				if (!strcmp(user[i].name, choice))
-					break;
+					piece[idx++] = i;
 			}
 			system("cls");
-			if (i == count)
+			if (!strlen(piece))
 				result = 2;
+			else
+			{
+				idx = 0;
+				while (1)
+				{
+					system("cls");
+					for (n = 0; n < (int)strlen(piece); n++)
+						printf("\n\t%d\t%s\t%-21s\t%s\n\n", user[piece[n]].ID, user[piece[n]].name, user[piece[n]].address, user[piece[n]].phone);
+					printf("\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t편집할 회원을 골라주십시오.");
+					gotoxy(4, idx*3+2);
+					printf("▶");
+					n = getch();
+					if (n == 80)
+					{
+						idx++;
+						if (idx >= (int)strlen(piece))
+							idx = (int)strlen(piece) - 1;
+					}
+					else if (n == 72)
+					{
+						idx--;
+						if (idx < 0)
+							idx = 0;
+					}
+					else if (n == 13)
+					{
+						i = piece[idx];
+						break;
+					}
+				}
+			}
 			break;
 		case '3':
 			system("cls");
 			printf("\n\n전화번호입력: ");
-			gets(choice);
+			fgets(choice,40,stdin);
+			choice[(int)strlen(choice) - 1] = '\0';
+			fflush(stdin);
 			for (i = 0; i < count; i++)
 			{
 				if (!strcmp(user[i].phone, choice))
@@ -373,7 +419,7 @@ void editUser()
 				result = 3;
 			break;
 		}
-		if (i != count)
+		if (i != count || strlen(piece))
 			break;
 		if (select == 27)
 			return;
@@ -401,6 +447,7 @@ void editUser()
 				result = 0;
 				fgets(buffer, BUF, stdin);
 				buffer[(int)strlen(buffer) - 1] = '\0';
+				fflush(stdin);
 				
 				if (strlen(buffer) == 0)
 					result = 1;
@@ -433,6 +480,7 @@ void editUser()
 				gotoxy(19, 4);
 				fgets(buffer, BUF, stdin);
 				buffer[(int)strlen(buffer) - 1] = '\0';
+				fflush(stdin);
 				if (strlen(buffer) > 50)
 					result = -2;
 				else if (strlen(buffer) == 0 || buffer[0] == ' ')
@@ -461,6 +509,7 @@ void editUser()
 					gotoxy(22, 4);
 					fgets(buffer, BUF, stdin);
 					buffer[(int)strlen(buffer) - 1] = '\0';
+					fflush(stdin);
 					if (buffer[3] == '-' && buffer[8] == '-' &&strlen(buffer) == 13
 						&& buffer[0] == 48 && buffer[1] == 49
 						&& buffer[4] > 47 && buffer[4]<58
@@ -495,16 +544,148 @@ void editUser()
 	}
 }
 
+void deleteUser()
+{
+	int select;
+	int i = count, num;
+	int idx = 0, result = 0;
+	int n;
+	char piece[40] = { NULL };
+	char ID[15];
+	char choice[40];
+
+	while (1)
+	{
+		printf("\n\n1번: ID로 검색하기\n\n2번: 이름으로 검색하기\n\n3번: 전화번호로 검색하기\n\nESC: 메뉴로 돌아가기");
+		if (result == 1)
+			printf("\n\n\n\n\n\n\n\n\n\n\n\t\tERROR: 해당 ID의 회원은 존재하지 않습니다.");
+		else if (result == 2)
+			printf("\n\n\n\n\n\n\n\n\n\n\n\t\tERROR: 해당 이름의 회원은 존재하지 않습니다.");
+		else if (result == 3)
+			printf("\n\n\n\n\n\n\n\n\n\n\n\t\tERROR: 해당 전화번호의 회원은 존재하지 않습니다.");
+
+		select = getch();
+		system("cls");
+		switch (select)
+		{
+		case '1':
+			printf("\n\nID입력: ");
+			fgets(ID, 15, stdin);
+			ID[(int)strlen(ID) - 1] = '\0';
+			num = atoi(ID);
+			fflush(stdin);
+			for (i = 0; i < count; i++)
+			{
+				if (user[i].ID == num)
+					break;
+			}
+			if (i == count)
+				result = 1;
+			system("cls");
+			break;
+		case '2':
+			system("cls");
+			printf("\n\n이름입력: ");
+			fgets(choice, 40, stdin);
+			choice[(int)strlen(choice) - 1] = '\0';
+			fflush(stdin);
+			for (i = 0; i < count; i++)
+			{
+				if (!strcmp(user[i].name, choice))
+					piece[idx++] = i;
+			}
+			system("cls");
+			if (!strlen(piece))
+				result = 2;
+			else
+			{
+				idx = 0;
+				while (1)
+				{
+					system("cls");
+					for (n = 0; n < (int)strlen(piece); n++)
+						printf("\n\t%d\t%s\t%-21s\t%s\n\n", user[piece[n]].ID, user[piece[n]].name, user[piece[n]].address, user[piece[n]].phone);
+					printf("\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t삭제할 회원을 골라주십시오.");
+					gotoxy(4, idx * 3 + 2);
+					printf("▶");
+					n = getch();
+					if (n == 80)
+					{
+						idx++;
+						if (idx >= (int)strlen(piece))
+							idx = (int)strlen(piece) - 1;
+					}
+					else if (n == 72)
+					{
+						idx--;
+						if (idx < 0)
+							idx = 0;
+					}
+					else if (n == 13)
+					{
+						i = piece[idx];
+						break;
+					}
+				}
+			}
+			break;
+		case '3':
+			system("cls");
+			printf("\n\n전화번호입력: ");
+			fgets(choice, 40, stdin);
+			choice[(int)strlen(choice) - 1] = '\0';
+			fflush(stdin);
+			for (i = 0; i < count; i++)
+			{
+				if (!strcmp(user[i].phone, choice))
+					break;
+			}
+			system("cls");
+			if (i == count)
+				result = 3;
+			break;
+		}
+		if (i != count || strlen(piece))
+			break;
+		if (select == 27)
+			return;
+	}
+	while (1)
+	{
+		system("cls");
+		printf("\n\n삭제하신 회원:\n\nID: %d\tName: %s\tPhone Number: %s\n\nAddress: %s\n\n",
+			user[i].ID, user[i].name, user[i].phone, user[i].address);
+		printf("\n\n\n\n\t\t\t정상적으로 삭제되었습니다.");
+		printf("\n\n\n\n\t\t메뉴로 돌아가시려면 ESC를 눌러주십시오.");
+		if (getch() == 27)
+			break;
+	}
+	user[i].ID = 0;
+	strcpy(user[i].name, user[count].name);
+	strcpy(user[i].address, user[count].address);
+	strcpy(user[i].phone, user[count].phone);
+}
+
 void searchUser()
 {
 	int select;
 	int i = count, num;
+	char piece[40] = { NULL };
+	int idx;
+	char ID[15];
 	char choice[40];
 	int result = 0;
 
 	while (1)
 	{
-		if (i != count)
+		if (strlen(piece))
+		{
+			for (idx = 0; idx < (int)strlen(piece); idx++)
+			{
+				printf("\n\n찾으신 회원:\n\n%d\t%s\t%-21s\t%s\n\n", user[piece[idx]].ID, user[piece[idx]].name, user[piece[idx]].address, user[piece[idx]].phone);
+			}
+		}
+		else if (i != count)
 			printf("\n\n찾으신 회원:\n\nID: %d\tName: %s\tPhone Number: %s\n\nAddress: %s\n\n",
 			user[i].ID, user[i].name, user[i].phone, user[i].address);
 
@@ -522,7 +703,10 @@ void searchUser()
 		case '1':
 			system("cls");
 			printf("\n\nID입력: ");
-			scanf("%d", &num);
+			fgets(ID, 15, stdin);
+			ID[(int)strlen(ID) - 1] = '\0';
+			num = atoi(ID);
+			fflush(stdin);
 			for (i = 0; i < count; i++)
 			{
 				if (user[i].ID == num)
@@ -537,18 +721,22 @@ void searchUser()
 				
 			break;
 		case '2':
+			idx = 0;
 			system("cls");
 			printf("\n\n이름입력: ");
-			gets(choice);
+			fgets(choice,40,stdin);
+			choice[(int)strlen(choice) - 1] = '\0';
+			fflush(stdin);
 			for (i = 0; i < count; i++)
 			{
 				if (!strcmp(user[i].name, choice))
 				{
 					result = 0;
-					break;
+					piece[idx] = i;
+					idx++;
 				}
 			}
-			if (i == count)
+			if (!strlen(piece))
 				result = 1;
 			system("cls");
 				
@@ -556,7 +744,9 @@ void searchUser()
 		case '3':
 			system("cls");
 			printf("\n\n전화번호입력: ");
-			gets(choice);
+			fgets(choice,40,stdin);
+			choice[(int)strlen(choice) - 1] = '\0';
+			fflush(stdin);
 			for (i = 0; i < count; i++)
 			{
 				if (!strcmp(user[i].phone, choice))
