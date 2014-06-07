@@ -141,7 +141,7 @@ void printUser()
 			if (user[idx].ID == 0 && idx >= count)
 				printf(" \t%s\t%-21s\t%s\n\n", user[idx].name, user[idx].address, user[idx].phone);
 			else if (user[idx].ID == 0)
-				printf("delete\tdelete\tdelete\t\t\tdelete\n");
+				printf("delete\n\n");
 			else
 				printf("%d\t%s\t%-21s\t%s\n\n", user[idx].ID, user[idx].name, user[idx].address, user[idx].phone);
 		}
@@ -324,7 +324,7 @@ void editUser()
 	int i = count, num;
 	int idx = 0, result = 0;
 	int n;
-	char piece[40] = { NULL };
+	char piece[40] = "\0";
 	char ID[15];
 	char choice[40];
 
@@ -379,7 +379,7 @@ void editUser()
 					system("cls");
 					for (n = 0; n < (int)strlen(piece); n++)
 						printf("\n\t%d\t%s\t%-21s\t%s\n\n", user[piece[n]].ID, user[piece[n]].name, user[piece[n]].address, user[piece[n]].phone);
-					printf("\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t편집할 회원을 골라주십시오.");
+					printf("\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t편집할 회원을 골라주십시오. (Enter)");
 					gotoxy(4, idx*3+2);
 					printf("▶");
 					n = getch();
@@ -550,7 +550,7 @@ void deleteUser()
 	int i = count, num;
 	int idx = 0, result = 0;
 	int n;
-	char piece[40] = { NULL };
+	char piece[40] = "\0";
 	char ID[15];
 	char choice[40];
 
@@ -605,7 +605,7 @@ void deleteUser()
 					system("cls");
 					for (n = 0; n < (int)strlen(piece); n++)
 						printf("\n\t%d\t%s\t%-21s\t%s\n\n", user[piece[n]].ID, user[piece[n]].name, user[piece[n]].address, user[piece[n]].phone);
-					printf("\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t삭제할 회원을 골라주십시오.");
+					printf("\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t삭제할 회원을 골라주십시오. (Enter)");
 					gotoxy(4, idx * 3 + 2);
 					printf("▶");
 					n = getch();
@@ -661,16 +661,13 @@ void deleteUser()
 			break;
 	}
 	user[i].ID = 0;
-	strcpy(user[i].name, user[count].name);
-	strcpy(user[i].address, user[count].address);
-	strcpy(user[i].phone, user[count].phone);
 }
 
 void searchUser()
 {
 	int select;
 	int i = count, num;
-	char piece[40] = { NULL };
+	char piece[40] = "\0";
 	int idx;
 	char ID[15];
 	char choice[40];
@@ -737,7 +734,7 @@ void searchUser()
 				}
 			}
 			if (!strlen(piece))
-				result = 1;
+				result = 2;
 			system("cls");
 				
 			break;
@@ -756,7 +753,7 @@ void searchUser()
 				}
 			}
 			if (i == count)
-				result = 1;
+				result = 3;
 			system("cls");
 			break;
 		}
