@@ -141,7 +141,7 @@ void printUser()
 			if (user[idx].ID == 0 && idx >= count)
 				printf(" \t%s\t%-21s\t%s\n\n", user[idx].name, user[idx].address, user[idx].phone);
 			else if (user[idx].ID == 0)
-				printf("delete\n\n");
+				printf("\"Delete\"\n\n");
 			else
 				printf("%d\t%s\t%-21s\t%s\n\n", user[idx].ID, user[idx].name, user[idx].address, user[idx].phone);
 		}
@@ -324,7 +324,7 @@ void editUser()
 	int i = count, num;
 	int idx = 0, result = 0;
 	int n;
-	char piece[40] = "\0";
+	char piece[40] ;
 	char ID[15];
 	char choice[40];
 
@@ -358,6 +358,7 @@ void editUser()
 			system("cls");
 			break;
 		case '2':
+			idx = 0;
 			system("cls");
 			printf("\n\n이름입력: ");
 			fgets(choice,40,stdin);
@@ -365,29 +366,34 @@ void editUser()
 			fflush(stdin);
 			for (i = 0; i < count; i++)
 			{
-				if (!strcmp(user[i].name, choice))
+				if (strcmp(user[i].name, choice) == 0)
 					piece[idx++] = i;
 			}
 			system("cls");
-			if (!strlen(piece))
+			if (idx == 0)
 				result = 2;
 			else
 			{
+				result = 0;
 				idx = 0;
 				while (1)
 				{
 					system("cls");
-					for (n = 0; n < (int)strlen(piece); n++)
-						printf("\n\t%d\t%s\t%-21s\t%s\n\n", user[piece[n]].ID, user[piece[n]].name, user[piece[n]].address, user[piece[n]].phone);
+						n = 0;
+						while (!strcmp(user[piece[n]].name, choice))
+						{
+							printf("\n\t%d\t%s\t%-21s\t%s\n\n", user[piece[n]].ID, user[piece[n]].name, user[piece[n]].address, user[piece[n]].phone);
+							n++;
+						}
 					printf("\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t편집할 회원을 골라주십시오. (Enter)");
-					gotoxy(4, idx*3+2);
+					gotoxy(4, idx * 3 + 2);
 					printf("▶");
 					n = getch();
 					if (n == 80)
 					{
 						idx++;
-						if (idx >= (int)strlen(piece))
-							idx = (int)strlen(piece) - 1;
+						if (strcmp(user[piece[idx]].name, choice))
+							idx--;
 					}
 					else if (n == 72)
 					{
@@ -418,12 +424,13 @@ void editUser()
 			if (i == count)
 				result = 3;
 			break;
-		}
-		if (i != count || strlen(piece))
-			break;
-		if (select == 27)
+		case 27:
 			return;
-		
+		}
+		if (i != count)
+			break;
+		else if (i == count && result == 0)
+			break;
 	}
 	system("cls");
 	result = 0;
@@ -550,7 +557,7 @@ void deleteUser()
 	int i = count, num;
 	int idx = 0, result = 0;
 	int n;
-	char piece[40] = "\0";
+	char piece[40];
 	char ID[15];
 	char choice[40];
 
@@ -584,6 +591,7 @@ void deleteUser()
 			system("cls");
 			break;
 		case '2':
+			idx = 0;
 			system("cls");
 			printf("\n\n이름입력: ");
 			fgets(choice, 40, stdin);
@@ -591,20 +599,25 @@ void deleteUser()
 			fflush(stdin);
 			for (i = 0; i < count; i++)
 			{
-				if (!strcmp(user[i].name, choice))
+				if (strcmp(user[i].name, choice) == 0)
 					piece[idx++] = i;
 			}
 			system("cls");
-			if (!strlen(piece))
+			if (idx == 0)
 				result = 2;
 			else
 			{
+				result = 0;
 				idx = 0;
 				while (1)
 				{
 					system("cls");
-					for (n = 0; n < (int)strlen(piece); n++)
+					n = 0;
+					while (!strcmp(user[piece[n]].name, choice))
+					{
 						printf("\n\t%d\t%s\t%-21s\t%s\n\n", user[piece[n]].ID, user[piece[n]].name, user[piece[n]].address, user[piece[n]].phone);
+						n++;
+					}
 					printf("\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t삭제할 회원을 골라주십시오. (Enter)");
 					gotoxy(4, idx * 3 + 2);
 					printf("▶");
@@ -612,8 +625,8 @@ void deleteUser()
 					if (n == 80)
 					{
 						idx++;
-						if (idx >= (int)strlen(piece))
-							idx = (int)strlen(piece) - 1;
+						if (strcmp(user[piece[idx]].name, choice))
+							idx--;
 					}
 					else if (n == 72)
 					{
@@ -628,7 +641,7 @@ void deleteUser()
 					}
 				}
 			}
-			break;
+				break;
 		case '3':
 			system("cls");
 			printf("\n\n전화번호입력: ");
@@ -644,42 +657,50 @@ void deleteUser()
 			if (i == count)
 				result = 3;
 			break;
-		}
-		if (i != count || strlen(piece))
-			break;
-		if (select == 27)
+		case 27:
 			return;
+			}
+			if (i != count)
+				break;
+			else if (i == count && result == 0)
+				break;
+		}
+		while (1)
+		{
+			system("cls");
+			printf("\n\n삭제하신 회원:\n\nID: %d\tName: %s\tPhone Number: %s\n\nAddress: %s\n\n",
+				user[i].ID, user[i].name, user[i].phone, user[i].address);
+			printf("\n\n\n\n\t\t\t정상적으로 삭제되었습니다.");
+			printf("\n\n\n\n\t\t메뉴로 돌아가시려면 ESC를 눌러주십시오.");
+			if (getch() == 27)
+				break;
+		}
+		user[i].ID = 0;
+		strcpy(user[i].name, " ");
+		strcpy(user[i].address, " ");
+		strcpy(user[i].phone, " ");
 	}
-	while (1)
-	{
-		system("cls");
-		printf("\n\n삭제하신 회원:\n\nID: %d\tName: %s\tPhone Number: %s\n\nAddress: %s\n\n",
-			user[i].ID, user[i].name, user[i].phone, user[i].address);
-		printf("\n\n\n\n\t\t\t정상적으로 삭제되었습니다.");
-		printf("\n\n\n\n\t\t메뉴로 돌아가시려면 ESC를 눌러주십시오.");
-		if (getch() == 27)
-			break;
-	}
-	user[i].ID = 0;
-}
 
 void searchUser()
 {
 	int select;
 	int i = count, num;
-	char piece[40] = "\0";
-	int idx;
+	char piece[40];
+	int idx = 0;
 	char ID[15];
 	char choice[40];
 	int result = 0;
 
 	while (1)
 	{
-		if (strlen(piece))
+		if (result == 4)
 		{
-			for (idx = 0; idx < (int)strlen(piece); idx++)
+			printf("\n\n찾으신 회원:");
+			idx = 0;
+			while (!strcmp(user[piece[idx]].name, choice))
 			{
-				printf("\n\n찾으신 회원:\n\n%d\t%s\t%-21s\t%s\n\n", user[piece[idx]].ID, user[piece[idx]].name, user[piece[idx]].address, user[piece[idx]].phone);
+				printf("\n\n%d\t%s\t%-21s\t%s", user[piece[idx]].ID, user[piece[idx]].name, user[piece[idx]].address, user[piece[idx]].phone);
+				idx++;
 			}
 		}
 		else if (i != count)
@@ -688,11 +709,11 @@ void searchUser()
 
 		printf("\n\n1번: ID로 검색하기\n\n2번: 이름으로 검색하기\n\n3번: 전화번호로 검색하기\n\nESC: 메뉴로 돌아가기");
 		if (result == 1)
-			printf("\n\n\n\n\n\n\n\n\n\n\n\t\tERROR: 해당 ID의 회원은 존재하지 않습니다.");
+			printf("\n\n\n\n\n\n\n\n\n\t\tERROR: 해당 ID의 회원은 존재하지 않습니다.");
 		else if (result == 2)
-			printf("\n\n\n\n\n\n\n\n\n\n\n\t\tERROR: 해당 이름의 회원은 존재하지 않습니다.");
+			printf("\n\n\n\n\n\n\n\n\n\t\tERROR: 해당 이름의 회원은 존재하지 않습니다.");
 		else if (result == 3)
-			printf("\n\n\n\n\n\n\n\n\n\n\n\t\tERROR: 해당 전화번호의 회원은 존재하지 않습니다.");
+			printf("\n\n\n\n\n\n\n\n\n\t\tERROR: 해당 전화번호의 회원은 존재하지 않습니다.");
 		select = getch();
 		system("cls");
 		switch (select)
@@ -728,12 +749,12 @@ void searchUser()
 			{
 				if (!strcmp(user[i].name, choice))
 				{
-					result = 0;
+					result = 4;
 					piece[idx] = i;
 					idx++;
 				}
 			}
-			if (!strlen(piece))
+			if (idx == 0)
 				result = 2;
 			system("cls");
 				
