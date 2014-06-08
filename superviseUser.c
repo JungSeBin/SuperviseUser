@@ -3,7 +3,9 @@
 #include <string.h>
 #include <conio.h>
 #include <Windows.h>
+#include <time.h>
 #include "userInfo.h"
+
 #pragma warning(disable:4996)
 
 #define MAX 11
@@ -73,8 +75,15 @@ int main(void)
 	while (1)
 	{
 		system("cls");
-		printf("\n\n1번: 회원 목록보기\n\n2번: 회원 등록하기\n\n3번: 회원 저장하기\n\n4번: 회원 편집하기\n\n5번: 회원 삭제하기\n\n6번: 회원 검색하기\n\nESC: 종료하기");
-		printf("\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\tThanks to.덕성킴,남세");
+		WINE printf("\n\n\t\t\t1번: 회원 목록보기");
+		BLUE printf("\n\n\n\t\t\t2번: 회원 등록하기");
+		SKY printf("\n\n\n\t\t\t3번: 회원 저장하기");
+		GREEN printf("\n\n\n\t\t\t4번: 회원 편집하기");
+		YELLOW printf("\n\n\n\t\t\t5번: 회원 삭제하기");
+		BLOOD printf("\n\n\n\t\t\t6번: 회원 검색하기");
+		RED printf("\n\n\n\t\t\tESC: 종료하기");
+		WHITE printf("\n\n\n\t\t\t\t\t\t\tThanks to.덕성킴");
+		
 		while (1)
 		{
 			select = getch();
@@ -110,6 +119,22 @@ int main(void)
 				break;
 			else if (select == 27)
 			{
+				while (1)
+				{
+					system("cls");
+					printf("\n\n\n\n\n\n\n\n\t\t\t저장하시겠습니까? (Y/N)");
+					i = getch();
+					switch (i)
+					{
+					case 121:
+						saveUser();
+						break;
+					case 110:
+						break;
+					}
+					if (i == 110 || i == 121)
+						break;
+				}
 				system("cls");
 				break;
 			}
@@ -132,10 +157,12 @@ void printUser()
 	while (1)
 	{
 		idx = page * MAX;
+		YELGREEN
 		printf("ID\t");
-		printf("Name\t");
-		printf("Address\t\t\t");
-		printf("Phone Number\n");
+		printf("이름\t");
+		printf("주소\t\t\t");
+		printf("전화번호\n");
+		WHITE
 		for (; idx < (page + 1) * MAX; idx++)
 		{
 			if (user[idx].ID == 0 && idx >= count)
@@ -145,6 +172,7 @@ void printUser()
 			else
 				printf("%d\t%s\t%-21s\t%s\n\n", user[idx].ID, user[idx].name, user[idx].address, user[idx].phone);
 		}
+		YELGREEN
 		printf("메뉴로 돌아가시려면 \"ESC\"를 눌러주시기 바랍니다.  ◀ page:%d ▶",page);
 		move = getch();
 		if (move == 77)
@@ -173,13 +201,20 @@ void insertUser()
 
 	while (1)
 	{
-		printf("\n\nID: %d\n\n", user[count].ID);
-		printf("Name: ");
+		YELLOW
+		printf("\n\n\t○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●");
+		printf("\n\t●○                                                        ●○");
+		printf("\n\t○●                      회원 등록                         ○●");
+		printf("\n\t●○                                                        ●○");
+		printf("\n\t○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●");
+		WHITE
+		printf("\n\n\n\t\t\tID: %d\n\n", user[count].ID);
+		printf("\t\t\t이름: ");
 		if (result == 1)
-			printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\tERROR: 이름에 숫자나 공백은 들어갈 수 없습니다.");
+			printf("\n\n\n\n\n\n\n\n\n\n\n\t\tERROR: 이름에 숫자나 공백은 들어갈 수 없습니다.");
 		else if (result == 2)
-			printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\tERROR: 이름은 한글10자 영문20자까지 가능합니다.");
-		gotoxy(7, 5);
+			printf("\n\n\n\n\n\n\n\n\n\n\n\t\tERROR: 이름은 한글10자 영문20자까지 가능합니다.");
+		gotoxy(31, 12);
 		result = 0;
 		fgets(buffer,BUF,stdin);
 		buffer[(int)strlen(buffer) - 1] = '\0';
@@ -209,14 +244,21 @@ void insertUser()
 	system("cls");
 	while (1)
 	{
-		printf("\n\nID: %d", user[count].ID);
-		printf("\n\nName: %s\n\n", user[count].name);
-		printf("Address: ");
+		YELLOW
+		printf("\n\n\t○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●");
+		printf("\n\t●○                                                        ●○");
+		printf("\n\t○●                      회원 등록                         ○●");
+		printf("\n\t●○                                                        ●○");
+		printf("\n\t○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●");
+		WHITE
+		printf("\n\n\n\t\t\tID: %d", user[count].ID);
+		printf("\n\n\t\t\t이름: %s\n\n", user[count].name);
+		printf("\t\t\t주소: ");
 		if (result == -1)
-			printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\tERROR: 주소를 입력해 주십시오.");
+			printf("\n\n\n\n\n\n\n\n\t\t\tERROR: 주소를 입력해 주십시오.");
 		else if (result == -2)
-			printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\tERROR: 주소가 너무 깁니다.");
-		gotoxy(10, 7);
+			printf("\n\n\n\n\n\n\n\n\t\t\tERROR: 주소가 너무 깁니다.");
+		gotoxy(31, 14);
 		fgets(buffer, BUF, stdin);
 		buffer[(int)strlen(buffer) - 1] = '\0';
 		fflush(stdin);
@@ -238,15 +280,32 @@ void insertUser()
 	{
 		while (1)
 		{
-			printf("\n\nID: %d", user[count].ID);
-			printf("\n\nName: %s\n\n", user[count].name);
-			printf("Address: %s\n\n", user[count].address);
-			printf("Phone Number: ");
+			YELLOW
+			printf("\n\n\t○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●");
+			printf("\n\t●○                                                        ●○");
+			printf("\n\t○●                      회원 등록                         ○●");
+			printf("\n\t●○                                                        ●○");
+			printf("\n\t○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●");
+			WHITE
+			printf("\n\n\n\t\t\tID: %d", user[count].ID);
+			printf("\n\n\t\t\t이름: %s\n\n", user[count].name);
+			printf("\t\t\t주소: %s\n\n", user[count].address);
+			printf("\t\t\t전화번호: ");
+			RED
 			if (result == 1)
-				printf("\n\n\n\n\n\n\n\n\n\n\n\t\t전화번호의 형식은 \"01x-xxxx-xxxx\" 입니다.");
+			{
+				printf("\n\n\n\n\n\t\tERROR: ");
+				WHITE
+				printf("전화번호의 형식은 \"01x-xxxx-xxxx\" 입니다.");
+			}
 			else if (result == 0)
-				printf("\n\n\n\n\n\n\n\n\n\n\n\t\t    ERROR: 이미 존재하는 전화번호 입니다.\n\n");
-			gotoxy(15, 9);
+			{
+				printf("\n\n\n\n\n\t\t    ERROR: ");
+				WHITE
+				printf("이미 존재하는 전화번호 입니다.\n\n");
+			}
+			WHITE
+			gotoxy(35, 16);
 			fgets(buffer, BUF, stdin);
 			buffer[(int)strlen(buffer) - 1] = '\0';
 			fflush(stdin);
@@ -281,17 +340,56 @@ void insertUser()
 		system("cls");
 	}
 	system("cls");
-	printf("\n\nID: %d\tName: %s\tPhone Number: %s\n\nAddress: %s\t\n\n다음과 같은 정보로 회원이 등록되었습니다.\n\n",
-		user[count].ID, user[count].name, user[count].phone, user[count].address);
-	count++;
+	for (i = 0; i < 10; i++)
+	{
+		system("cls");
+		GOLD;
+		printf("\n\n\t●○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●○");
+		printf("\n\t○●                                                        ○●");
+		printf("\n\t●○                   회원 등록 완료                       ●○");
+		printf("\n\t○●                                                        ○●");
+		printf("\n\t●○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●○");
+		WHITE
+		printf("\n\n\n\t\t\tID: %d", user[count].ID);
+		printf("\n\n\t\t\t이름: %s\n\n", user[count].name);
+		printf("\t\t\t주소: %s\n\n", user[count].address);
+		printf("\t\t\t전화번호: %s\n\n", user[count].phone);
+		Sleep(50);
+		system("cls");
+		YELLOW;
+		printf("\n\n\t○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●");
+		printf("\n\t●○                                                        ●○");
+		printf("\n\t○●                   회원 등록 완료                       ○●");
+		printf("\n\t●○                                                        ●○");
+		printf("\n\t○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●");
+		WHITE
+		printf("\n\n\n\t\t\tID: %d", user[count].ID);
+		printf("\n\n\t\t\t이름: %s\n\n", user[count].name);
+		printf("\t\t\t주소: %s\n\n", user[count].address);
+		printf("\t\t\t전화번호: %s\n\n", user[count].phone);
+		Sleep(50);
+	}
 	while (1)
 	{
+		system("cls");
+		YELLOW
+		printf("\n\n\t○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●");
+		printf("\n\t●○                                                        ●○");
+		printf("\n\t○●                   회원 등록 완료                       ○●");
+		printf("\n\t●○                                                        ●○");
+		printf("\n\t○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●");
+		WHITE
+		printf("\n\n\n\t\t\tID: %d", user[count].ID);
+		printf("\n\n\t\t\t이름: %s\n\n", user[count].name);
+		printf("\t\t\t주소: %s\n\n", user[count].address);
+		printf("\t\t\t전화번호: %s\n\n", user[count].phone);
 		printf("\n\n\n\t\t메뉴로 돌아가시려면 \"ESC\"를 눌러주시기 바랍니다.");
 		select = getch();
 		if (select == 27)
 			break;
 		system("cls");
 	}
+	count++;
 }
 
 
@@ -304,13 +402,15 @@ void saveUser()
 	fprintf(fp, "ID\tName\tAddress\t\t\tPhone Number");
 	for (idx = 0; idx < count; idx++)
 	{
+		if (user[idx].ID == 0)
+			continue;
 		fprintf(fp,"\n%d\t%s\t%-21s\t%s", user[idx].ID, user[idx].name, user[idx].address, user[idx].phone);
 	}
 	fclose(fp);
-	printf("\n\n최신 회원 정보가 성공적으로 저장되었습니다.\n\n");
+	printf("\n\n\n\t\t\t회원 정보가 성공적으로 저장되었습니다.\n\n");
 	while (1)
 	{
-		printf("\n\n\n\t\t메뉴로 돌아가시려면 \"ESC\"를 눌러주시기 바랍니다.");
+		printf("\n\n\n\t\t저장하기를 종료합니다. \"ESC\"를 눌러주시기 바랍니다.");
 		select = getch();
 		if (select == 27)
 			break;
