@@ -526,6 +526,9 @@ void editUser()
 			break;
 		case 27:
 			return;
+		default:
+			result = 4;
+			break;
 		}
 		if (i != count)
 			break;
@@ -759,6 +762,9 @@ void deleteUser()
 			break;
 		case 27:
 			return;
+		default:
+			result = 4;
+			break;
 			}
 			if (i != count)
 				break;
