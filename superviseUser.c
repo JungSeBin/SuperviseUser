@@ -25,8 +25,9 @@ int main(void)
 {
 	int i;
 	int select;
-	//char password[30];
-	//char answer[30] = "1";
+	char password[30];
+	char hint[30];
+	char answer[30] = "박은종 교수님 감사합니다";
 	char list[255];
 	char *str;
 	FILE *fp = fopen("data.txt", "r");
@@ -61,20 +62,36 @@ int main(void)
 	{
 		ID = ID>user[i].ID ? ID : user[i].ID;
 	}
-	//while (1)
-	//{
-	//	printf("\n\n\n\t\t\t힌트을 보시고 싶으면 \"힌트\"을 적으십시오");
-	//	if (!strcmp(password, "힌트"))
-	//		printf("\n\n\n\t\t\t힌트: ○○○ 교수님 사랑합니다");
-	//	printf("\n\n\n\n\n\n\n\n\t비밀번호를 입력하십시오: ");
-	//	gets(password);
-	//	if (!strcmp(password, answer))
-	//		break;
-	//	else
-	//		system("cls");
-	//}
 	while (1)
 	{
+		printf("\n\n\n\t\t     힌트을 보시고 싶으면 \"");
+		YELLOW; printf("힌트");
+		WHITE; printf("\" 를 적으십시오");
+		if (!strcmp(password, "힌트") || !strcmp(hint, "힌트"))
+		{
+			if (!strcmp(password, "힌트"))
+			{
+				strcpy(hint, password);
+			}
+			printf("\n\n\n\t\t\t힌트: ○○○ 교수님 감사합니다");
+		}
+		gotoxy(23, 9);
+		printf("\n\n\t●○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●○");
+		printf("\n\t○●                                                        ○●");
+		printf("\n\t●○            비밀번호:                                   ●○");
+		printf("\n\t○●                                                        ○●");
+		printf("\n\t●○●○●○●○●○●○●○●○●○●○●○●○●○●○●○●○");
+		gotoxy(35, 13);
+		gets(password);
+		if (!strcmp(password, answer))
+			break;
+		else
+			system("cls");
+	}
+	
+	while (1)
+	{
+		WHITE;
 		system("cls");
 		printf("  \t      ○●○●○●○●○●○●○●○●○●○●○●○●○●");
 		printf("\n\t      ●○                                            ●○");
@@ -275,7 +292,7 @@ void printUser()
 		{
 			if (user[idx].ID == 0 && idx >= count)
 				printf(" \t%s\t%-21s\t%s\n\n", user[idx].name, user[idx].address, user[idx].phone);
-			else if (user[idx].ID == 0)
+			else if (user[idx].ID == -1)
 				printf("\"Delete\"\n\n");
 			else
 				printf("%d\t%s\t%-21s\t%s\n\n", user[idx].ID, user[idx].name, user[idx].address, user[idx].phone);
@@ -563,7 +580,7 @@ void saveUser()
 	fprintf(fp, "ID\t이름\t주소\t\t\t전화번호");
 	for (idx = 0; idx < count; idx++)
 	{
-		if (user[idx].ID == 0)
+		if (user[idx].ID == -1)
 			continue;
 		fprintf(fp,"\n%d\t%s\t%-21s\t%s", user[idx].ID, user[idx].name, user[idx].address, user[idx].phone);
 	}
@@ -1349,10 +1366,10 @@ void deleteUser()
 			if (getch() == 27)
 				break;
 		}
-		user[i].ID = 0;
-		strcpy(user[i].name, " ");
-		strcpy(user[i].address, " ");
-		strcpy(user[i].phone, " ");
+		user[i].ID = -1;
+		strcpy(user[i].name, "*");
+		strcpy(user[i].address, "*");
+		strcpy(user[i].phone, "*");
 	}
 
 void searchUser()
@@ -1476,7 +1493,7 @@ void searchUser()
 					}
 					gotoxy(20, 23);
 					FLUORESCENT;
-					printf("편집할 회원을 골라주십시오.");
+					printf("검색할 회원을 골라주십시오.");
 					printf(" (Enter)");
 					gotoxy(4, idx * 3 + 3);
 					printf("▶");
@@ -1531,6 +1548,8 @@ void searchUser()
 		}
 		if (result == 0)
 			break;
+		else if (select == 27)
+			return;
 	}
 	for (idx = 0; idx < 10; idx++)
 	{
