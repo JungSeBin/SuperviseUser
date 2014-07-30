@@ -31,6 +31,14 @@ int _tmain(int argc, _TCHAR* argv[])
 		random_result = rand() % _countof(result);
 		do{
 			type = rand() % _countof(ship);
+
+
+
+
+
+
+
+
 		} while (ship[type] == "");
 
 		printf("xÁÂÇ¥:");
